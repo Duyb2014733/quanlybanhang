@@ -19,7 +19,7 @@ public class app {
             System.out.println("6. Thoát");
             System.out.print("Chọn: ");
             int choice = sc.nextInt();
-            sc.nextLine(); // Consume the newline character
+            sc.nextLine();
 
             switch (choice) {
                 case 1:
@@ -74,7 +74,7 @@ public class app {
                     System.out.print("Nhập xuất xứ: ");
                     String xuatXu = sc.nextLine();
 
-                    // SanPhamService.themSanPham(tenSP, kichThuoc, chatLieu, mauSac, gia, xuatXu);
+                    SanPhamService.themSanPham(tenSP, kichThuoc, chatLieu, mauSac, gia, xuatXu);
                     break;
                 case 6:
                     Connect.disconnect();
