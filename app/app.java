@@ -8,9 +8,11 @@ public class app {
         Scanner sc = new Scanner(System.in);
         Connection conn = Connect.getConnect();
         NguoiDungService nguoiDungService = new NguoiDungService(conn);
+        SanPhamService sanPhamService = new SanPhamService(conn);
 
         // Menu
         while (true) {
+            System.out.println("ADMIN");
             System.out.println("1. Thêm người dùng");
             System.out.println("2. Sửa người dùng");
             System.out.println("3. Xóa người dùng");
@@ -54,8 +56,7 @@ public class app {
                     break;
 
                 case 4:
-                    // Display the list of products
-                    // SanPhamService.hienThiDanhSachSanPham();
+                    sanPhamService.hienThiDanhSachSanPham();
                     break;
 
                 case 5:
@@ -74,7 +75,7 @@ public class app {
                     System.out.print("Nhập xuất xứ: ");
                     String xuatXu = sc.nextLine();
 
-                    SanPhamService.themSanPham(tenSP, kichThuoc, chatLieu, mauSac, gia, xuatXu);
+                    sanPhamService.themSanPham(tenSP, kichThuoc, chatLieu, mauSac, gia, xuatXu);
                     break;
                 case 6:
                     Connect.disconnect();

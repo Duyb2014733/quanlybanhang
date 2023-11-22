@@ -6,17 +6,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SanPhamService {
-    private static Connection conn;
+
+    private Connection conn;
 
     public SanPhamService(Connection conn) {
-        SanPhamService.conn = conn;
+        this.conn = conn;
     }
 
-    public static void themSanPham(String tenSP, String kichThuoc, String chatLieu, String mauSac, int gia,
+    public void themSanPham(String tenSanPham, String kichThuoc, String chatLieu, String mauSac, int gia,
             String xuatXu) {
         String sql = "INSERT INTO san_pham (ten_sp, kich_thuoc, chat_lieu, mau_sac, gia, xuat_xu) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setString(1, tenSP);
+            preparedStatement.setString(1, tenSanPham);
             preparedStatement.setString(2, kichThuoc);
             preparedStatement.setString(3, chatLieu);
             preparedStatement.setString(4, mauSac);
@@ -34,11 +35,11 @@ public class SanPhamService {
         }
     }
 
-    public void suaSanPham(int idSanPham, String tenSP, String kichThuoc, String chatLieu, String mauSac, int gia,
+    public void suaSanPham(int idSanPham, String tenSanPham, String kichThuoc, String chatLieu, String mauSac, int gia,
             String xuatXu) {
-        String sql = "UPDATE san_pham SET ten_sp = ?, kich_thuoc = ?, chat_lieu = ?, mau_sac = ?, gia = ?, xuat_xu = ? WHERE idsan_pham = ?";
+        String sql = "UPDATE san_pham SET ten_sp=?, kich_thuoc=?, chat_lieu=?, mau_sac=?, gia=?, xuat_xu=? WHERE idsan_pham=?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setString(1, tenSP);
+            preparedStatement.setString(1, tenSanPham);
             preparedStatement.setString(2, kichThuoc);
             preparedStatement.setString(3, chatLieu);
             preparedStatement.setString(4, mauSac);
@@ -58,7 +59,7 @@ public class SanPhamService {
     }
 
     public void xoaSanPham(int idSanPham) {
-        String sql = "DELETE FROM san_pham WHERE idsan_pham = ?";
+        String sql = "DELETE FROM san_pham WHERE idsan_pham=?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, idSanPham);
 
@@ -75,11 +76,11 @@ public class SanPhamService {
 
     public void hienThiDanhSachSanPham() {
         String sql = "SELECT * FROM san_pham";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             // In tiêu đề bảng
-            System.out.printf("%-5s%-20s%-15s%-20s%-15s%-10s%-15s\n",
+            System.out.format("%-5s%-20s%-10s%-20s%-15s%-10s%-15s\n",
                     "ID", "Tên Sản Phẩm", "Kích Thước", "Chất Liệu", "Màu Sắc", "Giá", "Xuất Xứ");
             System.out.println("-------------------------------------------------------------");
 
@@ -93,7 +94,7 @@ public class SanPhamService {
                 String xuatXu = resultSet.getString("xuat_xu");
 
                 // In thông tin sản phẩm
-                System.out.printf("%-5d%-20s%-15s%-20s%-15s%-10d%-15s\n",
+                System.out.format("%-5d%-20s%-10s%-20s%-15s%-10d%-15s\n",
                         idSanPham, tenSP, kichThuoc, chatLieu, mauSac, gia, xuatXu);
             }
         } catch (SQLException e) {
