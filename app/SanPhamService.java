@@ -26,32 +26,32 @@ public class SanPhamService {
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Thêm sản phẩm thành công!");
+                System.out.println("Them san pham thanh cong!");
             } else {
-                System.out.println("Thêm sản phẩm không thành công!");
+                System.out.println("Them san pham khong thanh cong!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void suaSanPham(int idSanPham, String tenSanPham, String kichThuoc, String chatLieu, String mauSac, int gia,
-            String xuatXu) {
+    public void suaSanPham(int idSuaSP, String tenSuaSP, String kichThuocSP, String chatLieuSP, String mauSacSP,
+            int giaSP, String xuatXuSP) {
         String sql = "UPDATE san_pham SET ten_sp=?, kich_thuoc=?, chat_lieu=?, mau_sac=?, gia=?, xuat_xu=? WHERE idsan_pham=?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setString(1, tenSanPham);
-            preparedStatement.setString(2, kichThuoc);
-            preparedStatement.setString(3, chatLieu);
-            preparedStatement.setString(4, mauSac);
-            preparedStatement.setInt(5, gia);
-            preparedStatement.setString(6, xuatXu);
-            preparedStatement.setInt(7, idSanPham);
+            preparedStatement.setString(1, tenSuaSP);
+            preparedStatement.setString(2, kichThuocSP);
+            preparedStatement.setString(3, chatLieuSP);
+            preparedStatement.setString(4, mauSacSP);
+            preparedStatement.setInt(5, giaSP);
+            preparedStatement.setString(6, xuatXuSP);
+            preparedStatement.setInt(7, idSuaSP);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Sửa sản phẩm thành công!");
+                System.out.println("Sua san pham thanh cong!");
             } else {
-                System.out.println("Sửa sản phẩm không thành công!");
+                System.out.println("Sua san pham khong thanh cong!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,9 +65,9 @@ public class SanPhamService {
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Xóa sản phẩm thành công!");
+                System.out.println("Xoa san pham thanh cong!");
             } else {
-                System.out.println("Xóa sản phẩm không thành công!");
+                System.out.println("Xoa san pham khong thanh cong!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -80,9 +80,10 @@ public class SanPhamService {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             // In tiêu đề bảng
-            System.out.format("%-5s%-20s%-10s%-20s%-15s%-10s%-15s\n",
-                    "ID", "Tên Sản Phẩm", "Kích Thước", "Chất Liệu", "Màu Sắc", "Giá", "Xuất Xứ");
-            System.out.println("-------------------------------------------------------------");
+            System.out.format("%-5s | %-20s | %-10s | %-20s | %-15s | %-10s | %-15s\n",
+                    "ID", "Ten San Pham", "Kich Thuoc", "Chat Lieu", "Mau Sac", "Gia", "Xuat Xu");
+            System.out.println(
+                    "-----------------------------------------------------------------------------------------------------------------------");
 
             while (resultSet.next()) {
                 int idSanPham = resultSet.getInt("idsan_pham");
@@ -94,12 +95,30 @@ public class SanPhamService {
                 String xuatXu = resultSet.getString("xuat_xu");
 
                 // In thông tin sản phẩm
-                System.out.format("%-5d%-20s%-10s%-20s%-15s%-10d%-15s\n",
+                System.out.format("%-5d | %-20s | %-10s | %-20s | %-15s | %-10d | %-15s\n",
                         idSanPham, tenSP, kichThuoc, chatLieu, mauSac, gia, xuatXu);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean kiemTraSanPhamTonTai(int idSanPham) {
+        String sql = "SELECT COUNT(*) AS count FROM san_pham WHERE idsan_pham = ?";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setInt(1, idSanPham);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt("count");
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }

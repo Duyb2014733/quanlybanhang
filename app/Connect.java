@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 public class Connect {
     private static Connection conn;
+    private static int loggedInUserId;
 
     private Connect() {
     }
@@ -18,9 +19,9 @@ public class Connect {
                 String password = "";
 
                 conn = DriverManager.getConnection(url, user, password);
-                System.out.println("Kết nối thành công!");
+                System.out.println("Ket noi thang cong!");
             } catch (SQLException e) {
-                System.out.println("Kết nối không thành công!");
+                System.out.println("Ket noi khong thanh cong!");
                 e.printStackTrace();
             }
         }
@@ -36,5 +37,13 @@ public class Connect {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static int getLoggedInUserId() {
+        return loggedInUserId;
+    }
+
+    public static void setLoggedInUserId(int userId) {
+        loggedInUserId = userId;
     }
 }

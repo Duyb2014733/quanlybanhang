@@ -15,55 +15,115 @@ public class DatHangService {
         this.conn = conn;
     }
 
-    public void themDatHang(int tongChiPhi, int soLuong, int idNguoiDung, int idSanPham) {
-        String sql = "INSERT INTO ds_dat_hang (tong_chi_phi, so_luong, idnguoi_dung, idsan_pham) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setInt(1, tongChiPhi);
-            preparedStatement.setInt(2, soLuong);
-            preparedStatement.setInt(3, idNguoiDung);
-            preparedStatement.setInt(4, idSanPham);
+    public void themDatHang(int soLuong, int idNguoiDung, int idSanPham) {
+        String sqlGetProductPrice = "SELECT gia FROM san_pham WHERE idsan_pham = ?";
 
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Thêm đặt hàng thành công!");
+        try (PreparedStatement priceStatement = conn.prepareStatement(sqlGetProductPrice)) {
+            priceStatement.setInt(1, idSanPham);
+            ResultSet resultSet = priceStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int gia = resultSet.getInt("gia");
+                int tongChiPhi = soLuong * gia;
+
+                String sqlInsertOrder = "INSERT INTO ds_dat_hang (tong_chi_phi, so_luong, idnguoi_dung, idsan_pham) VALUES (?, ?, ?, ?)";
+
+                try (PreparedStatement insertOrderStatement = conn.prepareStatement(sqlInsertOrder)) {
+                    insertOrderStatement.setInt(1, tongChiPhi);
+                    insertOrderStatement.setInt(2, soLuong);
+                    insertOrderStatement.setInt(3, idNguoiDung);
+                    insertOrderStatement.setInt(4, idSanPham);
+
+                    int rowsAffected = insertOrderStatement.executeUpdate();
+                    if (rowsAffected > 0) {
+                        System.out.println("Them dat hang thanh cong!");
+                    } else {
+                        System.out.println("Them dat hang khong thanh cong!");
+                    }
+                }
             } else {
-                System.out.println("Thêm đặt hàng không thành công!");
+                System.out.println("Khong tim thay gia cua san pham!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void suaDatHang(int idDatHang, int tongChiPhi, int soLuong, int idNguoiDung, int idSanPham) {
-        String sql = "UPDATE ds_dat_hang SET tong_chi_phi=?, so_luong=?, idnguoi_dung=?, idsan_pham=? WHERE id_dat_hang=?";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setInt(1, tongChiPhi);
-            preparedStatement.setInt(2, soLuong);
-            preparedStatement.setInt(3, idNguoiDung);
-            preparedStatement.setInt(4, idSanPham);
-            preparedStatement.setInt(5, idDatHang);
+    public void hienThiGioHang(int idNguoiDung) {
+        String sql = "SELECT sp.idsan_pham, sp.ten_sp, sp.gia, dh.so_luong, dh.tong_chi_phi " +
+                "FROM ds_dat_hang dh " +
+                "JOIN san_pham sp ON dh.idsan_pham = sp.idsan_pham " +
+                "WHERE dh.idnguoi_dung = ?";
 
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Sửa đặt hàng thành công!");
-            } else {
-                System.out.println("Sửa đặt hàng không thành công!");
+        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setInt(1, idNguoiDung);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // In tiêu đề bảng
+            System.out.printf("%-5s | %-20s | %-10s | %-10s | %-15s\n", "ID", "Ten San Pham", "Gia", "So Luong",
+                    "Tong Chi Phi");
+            System.out.println("---------------------------------------------------------------------");
+
+            while (resultSet.next()) {
+                int idSanPham = resultSet.getInt("idsan_pham");
+                String tenSP = resultSet.getString("ten_sp");
+                int gia = resultSet.getInt("gia");
+                int soLuong = resultSet.getInt("so_luong");
+                int tongChiPhi = resultSet.getInt("tong_chi_phi");
+
+                // In thông tin sản phẩm trong giỏ hàng
+                System.out.printf("%-5d | %-20s | %-10d | %-10d | %-15d\n", idSanPham, tenSP, gia, soLuong, tongChiPhi);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void xoaDatHang(int idDatHang) {
-        String sql = "DELETE FROM ds_dat_hang WHERE id_dat_hang=?";
+    public void suaSanPhamTrongGioHang(int idNguoiDung, int idSanPham, int soLuongMoi) {
+        String selectSql = "SELECT gia FROM san_pham WHERE idsan_pham = ?";
+        String updateSql = "UPDATE ds_dat_hang SET so_luong=?, tong_chi_phi=? WHERE idnguoi_dung=? AND idsan_pham=?";
+
+        try (PreparedStatement selectStatement = conn.prepareStatement(selectSql)) {
+            // Retrieve the price of the product
+            selectStatement.setInt(1, idSanPham);
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int gia = resultSet.getInt("gia");
+                int tongChiPhiMoi = soLuongMoi * gia;
+
+                try (PreparedStatement updateStatement = conn.prepareStatement(updateSql)) {
+                    updateStatement.setInt(1, soLuongMoi);
+                    updateStatement.setInt(2, tongChiPhiMoi);
+                    updateStatement.setInt(3, idNguoiDung);
+                    updateStatement.setInt(4, idSanPham);
+
+                    int rowsAffected = updateStatement.executeUpdate();
+                    if (rowsAffected > 0) {
+                        System.out.println("Sua san pham trong gio hang thanh cong!");
+                    } else {
+                        System.out.println("Sua san pham trong gio hang khong thanh cong!");
+                    }
+                }
+            } else {
+                System.out.println("Khong tim thay san pham trong CSDL!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void xoaSanPhamTrongGioHang(int idNguoiDung, int idSanPham) {
+        String sql = "DELETE FROM ds_dat_hang WHERE idnguoi_dung=? AND idsan_pham=?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setInt(1, idDatHang);
+            preparedStatement.setInt(1, idNguoiDung);
+            preparedStatement.setInt(2, idSanPham);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Xóa đặt hàng thành công!");
+                System.out.println("Xoa san pham trong gio hang thanh cong!");
             } else {
-                System.out.println("Xóa đặt hàng không thành công!");
+                System.out.println("Xoa san pham trong gio hang khong thanh cong!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,11 +138,11 @@ public class DatHangService {
 
             while (resultSet.next()) {
                 String thongTinDatHang = "ID: " + resultSet.getInt("id_dat_hang") +
-                        ", Tổng chi phí: " + resultSet.getInt("tong_chi_phi") +
-                        ", Số lượng: " + resultSet.getInt("so_luong") +
-                        ", Ngày: " + resultSet.getTimestamp("ngay") +
-                        ", ID Người dùng: " + resultSet.getInt("idnguoi_dung") +
-                        ", ID Sản phẩm: " + resultSet.getInt("idsan_pham");
+                        ", Tong chi phi: " + resultSet.getInt("tong_chi_phi") +
+                        ", So luong: " + resultSet.getInt("so_luong") +
+                        ", Ngay: " + resultSet.getTimestamp("ngay") +
+                        ", ID Nguoi dung: " + resultSet.getInt("idnguoi_dung") +
+                        ", ID San pham: " + resultSet.getInt("idsan_pham");
 
                 danhSachDatHang.add(thongTinDatHang);
             }
