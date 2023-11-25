@@ -60,7 +60,6 @@ public class app {
                     break;
 
                 case 5:
-                    // Add a new product
                     System.out.print("Nhập tên sản phẩm: ");
                     String tenSP = sc.nextLine();
                     System.out.print("Nhập kích thước: ");

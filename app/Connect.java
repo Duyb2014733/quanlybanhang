@@ -6,9 +6,8 @@ import java.sql.SQLException;
 
 public class Connect {
     private static Connection conn;
-    
+
     private Connect() {
-        // private constructor to prevent instantiation
     }
 
     public static Connection getConnect() {
@@ -16,7 +15,7 @@ public class Connect {
             try {
                 String url = "jdbc:mysql://localhost:3306/quanlybanhang";
                 String user = "root";
-                String password = ""; // Your database password here
+                String password = "";
 
                 conn = DriverManager.getConnection(url, user, password);
                 System.out.println("Kết nối thành công!");
