@@ -1,4 +1,4 @@
-package app;
+package src.app;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,11 +32,15 @@ public class NguoiDungService {
         }
     }
 
-    public void suaNguoiDung(int idNguoiDung, String hoTen) {
-        String sql = "UPDATE nguoi_dung SET ho_ten = ? WHERE idnguoi_dung = ?";
+    public void suaNguoiDung(int idNguoiDung, String hoTen, String sdt, String email, String matKhau, String diaChi) {
+        String sql = "UPDATE nguoi_dung SET ho_ten = ?, sdt = ?, email = ?, mat_khau = ?, dia_chi = ? WHERE idnguoi_dung = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, hoTen);
-            preparedStatement.setInt(2, idNguoiDung);
+            preparedStatement.setString(2, sdt);
+            preparedStatement.setString(3, email);
+            preparedStatement.setString(4, matKhau);
+            preparedStatement.setString(5, diaChi);
+            preparedStatement.setInt(6, idNguoiDung);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -133,4 +137,23 @@ public class NguoiDungService {
 
         return userId;
     }
+
+    public void hienThiThongTinTatCaNguoiDung() {
+        String sql = "SELECT idnguoi_dung, ho_ten, sdt, email, dia_chi FROM nguoi_dung";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                System.out.println("ID: " + resultSet.getInt("idnguoi_dung"));
+                System.out.println("Ho Ten: " + resultSet.getString("ho_ten"));
+                System.out.println("So Dien Thoai: " + resultSet.getString("sdt"));
+                System.out.println("Email: " + resultSet.getString("email"));
+                System.out.println("Dia Chi: " + resultSet.getString("dia_chi"));
+                System.out.println("---------------");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

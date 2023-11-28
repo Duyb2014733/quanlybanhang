@@ -1,4 +1,4 @@
-package app;
+package src.app;
 
 import java.sql.Connection;
 import java.util.Scanner;
@@ -124,14 +124,11 @@ public class app {
                     if (sanPhamService.kiemTraSanPhamTonTai(idSanPham)) {
                         int idNguoiDung = Connect.getLoggedInUserId();
                         datHangService.themDatHang(soLuong, idNguoiDung, idSanPham);
-                        System.out.println("Them san pham vao gio hang thanh cong!");
-                    } else {
-                        System.out.println("San pham khong ton tai!");
                     }
                     break;
 
                 case 3:
-                    System.out.println("\n");
+                    System.out.println("\n--------------------GIO HANG--------------------\n");
                     int idNguoiDung = Connect.getLoggedInUserId();
                     datHangService.hienThiGioHang(idNguoiDung);
                     break;
@@ -148,7 +145,6 @@ public class app {
 
                     int idNguoiDungSua = Connect.getLoggedInUserId();
                     datHangService.suaSanPhamTrongGioHang(idNguoiDungSua, idSanPhamSua, soLuongMoi);
-                    System.out.println("Sua san pham trong gio hang thanh cong!");
                     break;
 
                 case 5:
@@ -160,7 +156,6 @@ public class app {
 
                     int idNguoiDungXoa = Connect.getLoggedInUserId();
                     datHangService.xoaSanPhamTrongGioHang(idNguoiDungXoa, idSanPhamXoa);
-                    System.out.println("Xoa san pham trong gio hang thanh cong!");
                     break;
                 case 6:
                     System.out.println("\n");
@@ -190,11 +185,12 @@ public class app {
             System.out.println("1. Them nguoi dung");
             System.out.println("2. Sua nguoi dung");
             System.out.println("3. Xoa nguoi dung");
-            System.out.println("4. Hien thi danh sach san pham");
-            System.out.println("5. Them san pham");
-            System.out.println("6. Sua san pham");
-            System.out.println("7. Xoa san pham");
-            System.out.println("8. Dang xuat");
+            System.out.println("4. Hien thi danh sach nguoi dung");
+            System.out.println("5. Hien thi danh sach san pham");
+            System.out.println("6. Them san pham");
+            System.out.println("7. Sua san pham");
+            System.out.println("8. Xoa san pham");
+            System.out.println("9. Dang xuat");
             System.out.println("0. Thoat");
             System.out.print("Chon: ");
             int choice = sc.nextInt();
@@ -222,10 +218,23 @@ public class app {
                     System.out.print("Nhap ID nguoi dung can sua: ");
                     int idSua = sc.nextInt();
                     sc.nextLine();
+
                     System.out.print("Nhap ho ten moi: ");
                     String hoTenMoi = sc.nextLine();
 
-                    nguoiDungService.suaNguoiDung(idSua, hoTenMoi);
+                    System.out.print("Nhap so dien thoai moi: ");
+                    String sdtMoi = sc.nextLine();
+
+                    System.out.print("Nhap email moi: ");
+                    String emailMoi = sc.nextLine();
+
+                    System.out.print("Nhap mat khau moi: ");
+                    String matKhauMoi = sc.nextLine();
+
+                    System.out.print("Nhap dia chi moi: ");
+                    String diaChiMoi = sc.nextLine();
+
+                    nguoiDungService.suaNguoiDung(idSua, hoTenMoi, sdtMoi, emailMoi, matKhauMoi, diaChiMoi);
                     break;
 
                 case 3:
@@ -236,11 +245,15 @@ public class app {
                     break;
 
                 case 4:
+                    System.out.println("\nDanh sach tat ca nguoi dung:\n");
+                    nguoiDungService.hienThiThongTinTatCaNguoiDung();
+                    break;
+                case 5:
                     System.out.println("\n");
                     sanPhamService.hienThiDanhSachSanPham();
                     break;
 
-                case 5:
+                case 6:
                     System.out.println("\n");
                     System.out.print("Nhap ten san pham: ");
                     String tenSP = sc.nextLine();
@@ -258,7 +271,7 @@ public class app {
 
                     sanPhamService.themSanPham(tenSP, kichThuoc, chatLieu, mauSac, gia, xuatXu);
                     break;
-                case 6:
+                case 7:
                     System.out.println("\n");
                     System.out.print("Nhap ID san pham can sua: ");
                     int idSuaSP = sc.nextInt();
@@ -273,17 +286,18 @@ public class app {
                     String mauSacSP = sc.nextLine();
                     System.out.print("Nhap gia san pham moi: ");
                     int giaSP = sc.nextInt();
+                    sc.nextLine();
                     System.out.print("Nhap xuat xu san pham moi: ");
                     String xuatXuSP = sc.nextLine();
                     sanPhamService.suaSanPham(idSuaSP, tenSuaSP, kichThuocSP, chatLieuSP, mauSacSP, giaSP, xuatXuSP);
                     break;
-                case 7:
+                case 8:
                     System.out.println("\n");
                     System.out.print("Nhap ID san pham can xoa: ");
                     int idSPXoa = sc.nextInt();
                     sanPhamService.xoaSanPham(idSPXoa);
                     break;
-                case 8:
+                case 9:
                     System.out.println("\n");
                     System.out.println("Dang xuat tai khoan!");
                     dangXuat();

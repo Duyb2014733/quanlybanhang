@@ -1,4 +1,4 @@
-package app;
+package src.app;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,9 +36,9 @@ public class DatHangService {
 
                     int rowsAffected = insertOrderStatement.executeUpdate();
                     if (rowsAffected > 0) {
-                        System.out.println("Them dat hang thanh cong!");
+                        System.out.println("Them gio hang thanh cong!");
                     } else {
-                        System.out.println("Them dat hang khong thanh cong!");
+                        System.out.println("Them gio hang khong thanh cong!");
                     }
                 }
             } else {
