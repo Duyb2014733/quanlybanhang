@@ -121,7 +121,7 @@ public class NguoiDungService {
     }
 
     public int getNguoiDungIdByEmail(String email) {
-        int userId = -1; // Default value if not found
+        int userId = -1;
 
         String sql = "SELECT idnguoi_dung FROM nguoi_dung WHERE email = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {

@@ -84,7 +84,6 @@ public class DatHangService {
         String updateSql = "UPDATE ds_dat_hang SET so_luong=?, tong_chi_phi=? WHERE idnguoi_dung=? AND idsan_pham=?";
 
         try (PreparedStatement selectStatement = conn.prepareStatement(selectSql)) {
-            // Retrieve the price of the product
             selectStatement.setInt(1, idSanPham);
             ResultSet resultSet = selectStatement.executeQuery();
 
